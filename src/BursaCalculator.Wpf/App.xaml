@@ -1,0 +1,54 @@
+﻿<Application x:Class="BursaCalculator.Wpf.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+         <ResourceDictionary>
+             <Style x:Key="LeftPanel" TargetType="StackPanel">
+                 <Setter Property="Margin" Value="6,0,3,3"></Setter>
+                 <Setter Property="Background" Value="White"></Setter>
+             </Style>
+             <Style x:Key="RightPanel" TargetType="StackPanel">
+                 <Setter Property="Margin" Value="3,0,6,3"></Setter>
+                 <Setter Property="Background" Value="White"></Setter>
+             </Style>
+             <Style x:Key="ControlGroup" TargetType="StackPanel">
+                 <Setter Property="Orientation" Value="Vertical"></Setter>
+                 <Setter Property="Margin" Value="10,0,10,0"></Setter>
+             </Style>
+             <Style TargetType="TextBox">
+                 <Setter Property="FontSize" Value="16"></Setter>
+                 <Setter Property="Background" Value="#FFE8F0FA"></Setter>
+                 <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
+                 <Setter Property="BorderThickness" Value="0,0,0,0"></Setter>
+                 <Setter Property="Margin" Value="0,0,0,10"></Setter>
+                 <Setter Property="Height" Value="32"></Setter>
+                 <Setter Property="VerticalAlignment" Value="Stretch"></Setter>
+                 <Setter Property="Padding" Value="3,2,0,0"></Setter>
+                 <Style.Triggers>
+                     <EventTrigger RoutedEvent="TextChanged">
+                         <BeginStoryboard>
+                             <Storyboard Duration="0:0:0.2">
+                                 <ColorAnimation Storyboard.TargetProperty="(TextBox.Background).Color" From="#FFE8F0FA" To="DodgerBlue"/>
+                                 <ColorAnimation Storyboard.TargetProperty="(TextBox.Background).Color" From="DodgerBlue" To="#FFE8F0FA" Duration="0:0:0.2"/>
+                            </Storyboard>
+                         </BeginStoryboard>
+                     </EventTrigger>
+                 </Style.Triggers>
+             </Style>
+             <Style x:Key="UpDown" TargetType="TextBox">
+                 <EventSetter Event="KeyDown" Handler="TextBox_OnKeyDownHandler"></EventSetter>
+             </Style>
+             <Style TargetType="Label">
+                 <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+                 <Setter Property="Height" Value="Auto"></Setter>
+                 <Setter Property="VerticalAlignment" Value="Top"></Setter>
+                 <Setter Property="Width" Value="Auto"></Setter>
+                 <Setter Property="Foreground" Value="#FF6F7788"></Setter>
+                 <Setter Property="FontSize" Value="10"></Setter>
+                 <Setter Property="FontWeight" Value="Bold"></Setter>
+                 <Setter Property="Padding" Value="5,0,5,0"></Setter>
+             </Style>
+         </ResourceDictionary>
+    </Application.Resources>
+</Application>

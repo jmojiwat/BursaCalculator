@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Authors>Jake Mojiwat</Authors>
+    <PackageId>BursaCalculator</PackageId>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Copyright>&amp;copy; 2020, Jacob Mojiwat</Copyright>
+    <Product>Bursa Position Calculator</Product>
+    <Company />
+    <AssemblyName>BursaCalculator</AssemblyName>
+    <StartupObject></StartupObject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.Events.WPF" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Validation" Version="1.7.1" />
+    <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BursaCalculator.Core\BursaCalculator.Core.csproj" />
+    <ProjectReference Include="..\BursaCalculator.Persistence\BursaCalculator.Persistence.csproj" />
+    <ProjectReference Include="..\BursaCalculator.ViewModel\BursaCalculator.ViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="TypeConverters\MoneyToStringN0TypeConverter.cs" />
+  </ItemGroup>
+
+</Project>
