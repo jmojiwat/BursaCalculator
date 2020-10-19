@@ -4,6 +4,8 @@ Bursa Position Calculator helps you to find your position size based on your Ent
 
 This app only supports buying long and does not support selling short.
 
+![alt text](bursacalculator.1.0.0-beta.png)
+
 ## Left Column
 
 The left column has the usual input fields to help you calculate your position sizes.

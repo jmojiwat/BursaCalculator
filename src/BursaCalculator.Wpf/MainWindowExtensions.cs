@@ -67,10 +67,7 @@ namespace BursaCalculator.Wpf
             {
                 var pi = memberSelectorExpression.Member as PropertyInfo;
                 var amount = (Money) pi.GetValue(viewModel);
-                var newAmount = IncrementPrice(amount);
-                object newAmountBoxed = newAmount;
-                object boxed = viewModel;
-                pi.SetValue(boxed, newAmountBoxed, null);
+                pi.SetValue(viewModel, IncrementPrice(amount));
             }
         }
 
@@ -93,10 +90,7 @@ namespace BursaCalculator.Wpf
         public static bool IsGreaterThanZero(Lot amount) => amount > LotExtensions.Lot(0);
         public static bool IsGreaterThanZero(decimal amount) => amount > 0;
 
-        public static bool IsValidDecimal(string s)
-        {
-            return decimal.TryParse(s, out _);
-        }
+        public static bool IsValidDecimal(string s) => decimal.TryParse(s, out _);
 
         public static void KeepTextBoxState(TextBox textBox, Action action)
         {

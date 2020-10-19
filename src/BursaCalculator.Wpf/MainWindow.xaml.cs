@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.ViewModel;
+using BursaCalculator.Wpf.TypeConverters;
 using ReactiveUI;
 using static BursaCalculator.Persistence.SettingsExtensions;
 using static BursaCalculator.ViewModel.MainWindowViewModelExtensions;
@@ -234,7 +235,8 @@ namespace BursaCalculator.Wpf
 
             this.OneWayBind(ViewModel,
                     vm => vm.RiskReward,
-                    v => v.RiskRewardTextBlock.Text)
+                    v => v.RiskRewardTextBlock.Text, null, 
+                    new RewardRiskToStringTypeConverter())
                 .DisposeWith(disposableRegistration);
         }
 
