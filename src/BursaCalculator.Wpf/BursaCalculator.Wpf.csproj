@@ -7,11 +7,14 @@
     <Authors>Jake Mojiwat</Authors>
     <PackageId>BursaCalculator</PackageId>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <Copyright>&amp;copy; 2020, Jacob Mojiwat</Copyright>
+    <Copyright>© 2020, Jacob Mojiwat</Copyright>
     <Product>Bursa Position Calculator</Product>
     <Company />
     <AssemblyName>BursaCalculator</AssemblyName>
     <StartupObject></StartupObject>
+    <Version>1.0.0-beta</Version>
+    <Description></Description>
+    <RepositoryUrl>https://github.com/jmojiwat/BursaCalculator</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

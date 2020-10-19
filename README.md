@@ -28,9 +28,11 @@ Stop Loss Ticks -> Target Price
 
 ## Increment & Decrement Input Values
 
-For Entry Price, Stop Loss Price and Target Price, you can use the <kbd>↑</kbd> and <kbd>↓</kbd> to increment the price based on tick size.
+For Entry Price, Stop Loss Price and Target Price, use the <kbd>↑</kbd> and <kbd>↓</kbd> to increment the price based on tick size.
 
 Tick size depends on the amount and is listed in Bursa Malaysia website.
+
+For Stop Loss Ticks and Target Ticks, you can use the <kbd>↑</kbd> and <kbd>↓</kbd> to increment ticks.
 
 ## Visual Feedback
 
