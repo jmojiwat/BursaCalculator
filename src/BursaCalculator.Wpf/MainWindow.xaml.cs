@@ -5,8 +5,6 @@ using System.Reactive.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.ViewModel;
 using BursaCalculator.Wpf.TypeConverters;
 using ReactiveUI;
@@ -21,6 +19,7 @@ namespace BursaCalculator.Wpf
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
+    // ReSharper disable once RedundantExtendsListEntry
     public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         public MainWindow()
@@ -34,8 +33,6 @@ namespace BursaCalculator.Wpf
                 BindViewModelToView(disposableRegistration);
 
                 BindEvents(disposableRegistration);
-
-                ObserveViewInputControls(disposableRegistration);
 
                 ObserveViewModelProperties(disposableRegistration);
 
@@ -240,56 +237,7 @@ namespace BursaCalculator.Wpf
                 .DisposeWith(disposableRegistration);
         }
 
-        private Unit ObserveViewInputControls(CompositeDisposable disposableRegistration)
-        {
-            this.WhenAnyValue(view => view.CapitalTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputCapital)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.RiskTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputRisk)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.AccountRiskTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputAccountRisk)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.EntryPriceTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputEntryPrice)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.LotsTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputLots)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.StopLossPriceTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputStopLossPrice)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.StopLossPercentTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputStopLossPercent)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.StopLossTicksTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputStopLossTicks)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.TargetPriceTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputTargetPrice)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.TargetPercentTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputTargetPercent)
-                .DisposeWith(disposableRegistration);
-
-            this.WhenAnyValue(view => view.TargetTicksTextBox.Text, IsValidDecimal)
-                .BindTo(this, view => view.ViewModel.IsValidInputTargetTicks)
-                .DisposeWith(disposableRegistration);
-
-            return Unit.Default;
-        }
-
-        private Unit ObserveViewModelProperties(CompositeDisposable disposableRegistration)
+        private void ObserveViewModelProperties(CompositeDisposable disposableRegistration)
         {
             this.WhenAnyValue(view => view.ViewModel.Capital, IsGreaterThanZero)
                 .BindTo(this, view => view.ViewModel.IsValidCapital)
@@ -335,93 +283,84 @@ namespace BursaCalculator.Wpf
             this.WhenAnyValue(view => view.ViewModel.TargetTicks, IsGreaterThanZero)
                 .BindTo(this, view => view.ViewModel.IsValidTargetTicks)
                 .DisposeWith(disposableRegistration);
-
-            return Unit.Default;
         }
 
-        private Unit WhenAnyValid(CompositeDisposable disposableRegistration)
+        private void WhenAnyValid(CompositeDisposable disposableRegistration)
         {
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputCapital, view => view.ViewModel.IsValidCapital,
+            this.WhenAnyValue(view => view.ViewModel.IsValidCapital,
                     ChooseBrushColor)
                 .BindTo(this, view => view.CapitalTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputRisk, view => view.ViewModel.IsValidRisk,
+            this.WhenAnyValue(view => view.ViewModel.IsValidRisk,
                     ChooseBrushColor)
                 .BindTo(this, view => view.RiskTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputAccountRisk, view => view.ViewModel.IsValidAccountRisk,
+            this.WhenAnyValue(view => view.ViewModel.IsValidAccountRisk,
                     ChooseBrushColor)
                 .BindTo(this, view => view.AccountRiskTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputEntryPrice, view => view.ViewModel.IsValidEntryPrice,
+            this.WhenAnyValue(view => view.ViewModel.IsValidEntryPrice,
                     ChooseBrushColor)
                 .BindTo(this, view => view.EntryPriceTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputLots, view => view.ViewModel.IsValidLots,
+            this.WhenAnyValue(view => view.ViewModel.IsValidLots,
                     ChooseBrushColor)
                 .BindTo(this, view => view.LotsTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue<MainWindow, SolidColorBrush, Share>(view => view.ViewModel.Shares,
+            this.WhenAnyValue(view => view.ViewModel.Shares,
                     share => ChooseBrushColor(IsGreaterThanZero(share)))
                 .BindTo(this, view => view.SharesTextBlock.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue<MainWindow, SolidColorBrush, Money>(view => view.ViewModel.EntryAmount,
+            this.WhenAnyValue(view => view.ViewModel.EntryAmount,
                     amount => ChooseBrushColor(IsGreaterThanZero(amount)))
                 .BindTo(this, view => view.EntryAmountTextBlock.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputStopLossPrice,
-                    view => view.ViewModel.IsValidStopLossPrice, ChooseBrushColor)
+            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossPrice, ChooseBrushColor)
                 .BindTo(this, view => view.StopLossPriceTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputStopLossPercent,
-                    view => view.ViewModel.IsValidStopLossPercent, ChooseBrushColor)
+            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossPercent, ChooseBrushColor)
                 .BindTo(this, view => view.StopLossPercentTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputStopLossTicks,
-                    view => view.ViewModel.IsValidStopLossTicks, ChooseBrushColor)
+            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossTicks, ChooseBrushColor)
                 .BindTo(this, view => view.StopLossTicksTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue<MainWindow, SolidColorBrush, Money>(view => view.ViewModel.StopLossAmount,
+            this.WhenAnyValue(view => view.ViewModel.StopLossAmount,
                     amount => ChooseBrushColor(IsGreaterThanZero(amount)))
                 .BindTo(this, view => view.StopLossAmountTextBlock.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputTargetPrice, view => view.ViewModel.IsValidTargetPrice,
+            this.WhenAnyValue(view => view.ViewModel.IsValidTargetPrice,
                     ChooseBrushColor)
                 .BindTo(this, view => view.TargetPriceTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputTargetPercent,
-                    view => view.ViewModel.IsValidTargetPercent, ChooseBrushColor)
+            this.WhenAnyValue(view => view.ViewModel.IsValidTargetPercent, ChooseBrushColor)
                 .BindTo(this, view => view.TargetPercentTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidInputTargetTicks, view => view.ViewModel.IsValidTargetTicks,
-                    ChooseBrushColor)
+            this.WhenAnyValue(view => view.ViewModel.IsValidTargetTicks, ChooseBrushColor)
                 .BindTo(this, view => view.TargetTicksTextBox.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue<MainWindow, SolidColorBrush, Money>(view => view.ViewModel.TargetAmount,
+            this.WhenAnyValue(view => view.ViewModel.TargetAmount,
                     amount => ChooseBrushColor(IsGreaterThanZero(amount)))
                 .BindTo(this, view => view.TargetAmountTextBlock.Foreground)
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue<MainWindow, SolidColorBrush, decimal>(view => view.ViewModel.RiskReward,
+            this.WhenAnyValue(view => view.ViewModel.RiskReward,
                     amount => ChooseBrushColor(IsGreaterThanZero(amount)))
                 .BindTo(this, view => view.RiskRewardTextBlock.Foreground)
                 .DisposeWith(disposableRegistration);
-
-            return Unit.Default;
         }
     }
 }

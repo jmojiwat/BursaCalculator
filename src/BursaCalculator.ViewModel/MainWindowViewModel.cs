@@ -1,12 +1,9 @@
 using System;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using BursaCalculator.Core;
 using BursaCalculator.Core.Infrastructure;
 using LanguageExt;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using static BursaCalculator.Core.Infrastructure.TickExtensions;
 
 namespace BursaCalculator.ViewModel
 {
@@ -17,7 +14,7 @@ namespace BursaCalculator.ViewModel
             this.WhenAnyValue(
                     model => model.Capital,
                     model => model.Risk,
-                    PositionCalculatorExtensions.AccountRisk)
+                    MainWindowViewModelExtensions.AccountRisk)
                 .Subscribe(o => AccountRisk = o);
 
             this.WhenAnyValue(
@@ -56,7 +53,7 @@ namespace BursaCalculator.ViewModel
                     model => model.EntryPrice,
                     model => model.StopLossPrice,
                     model => model.Lots,
-                    PositionCalculatorExtensions.StopLossAmount)
+                    MainWindowViewModelExtensions.StopLossAmount)
                 .ToPropertyEx(this, model => model.StopLossAmount);
 
             this.WhenAnyValue(
@@ -75,7 +72,7 @@ namespace BursaCalculator.ViewModel
                     model => model.EntryPrice,
                     model => model.TargetPrice,
                     model => model.Lots,
-                    PositionCalculatorExtensions.TargetAmount)
+                    MainWindowViewModelExtensions.TargetAmount)
                 .ToPropertyEx(this, model => model.TargetAmount);
 
             this.WhenAnyValue(
@@ -117,41 +114,30 @@ namespace BursaCalculator.ViewModel
                 .Subscribe(o => StopLossPrice = o);
         }
 
-        [Reactive] public bool IsValidInputCapital { get; set; }
         [Reactive] public bool IsValidCapital { get; set; }
-        [Reactive] public bool IsValidInputRisk { get; set; }
         [Reactive] public bool IsValidRisk { get; set; }
-        [Reactive] public bool IsValidInputAccountRisk { get; set; }
         [Reactive] public bool IsValidAccountRisk { get; set; }
-        [Reactive] public bool IsValidInputEntryPrice { get; set; }
         [Reactive] public bool IsValidEntryPrice { get; set; }
-        [Reactive] public bool IsValidInputLots { get; set; }
         [Reactive] public bool IsValidLots { get; set; }
-        [Reactive] public bool IsValidInputStopLossPrice { get; set; }
         [Reactive] public bool IsValidStopLossPrice { get; set; }
-        [Reactive] public bool IsValidInputStopLossPercent { get; set; }
         [Reactive] public bool IsValidStopLossPercent { get; set; }
-        [Reactive] public bool IsValidInputStopLossTicks { get; set; }
         [Reactive] public bool IsValidStopLossTicks { get; set; }
-        [Reactive] public bool IsValidInputTargetPrice { get; set; }
         [Reactive] public bool IsValidTargetPrice { get; set; }
-        [Reactive] public bool IsValidInputTargetPercent { get; set; }
         [Reactive] public bool IsValidTargetPercent { get; set; }
-        [Reactive] public bool IsValidInputTargetTicks { get; set; }
         [Reactive] public bool IsValidTargetTicks { get; set; }
 
-        [Reactive] public Money Capital { get; set; }
-        [Reactive] public Percent Risk { get; set; }
-        [Reactive] public Money AccountRisk { get; set; }
+        [Reactive] public Option<Money> Capital { get; set; }
+        [Reactive] public Option<Percent> Risk { get; set; }
+        [Reactive] public Option<Money> AccountRisk { get; set; }
 
-        [Reactive] public Money EntryPrice { get; set; }
-        [Reactive] public Lot Lots { get; set; }
-        [Reactive] public Money StopLossPrice { get; set; }
-        [Reactive] public Percent StopLossPercent { get; set; }
-        [Reactive] public Tick StopLossTicks { get; set; }
-        [Reactive] public Money TargetPrice { get; set; }
-        [Reactive] public Percent TargetPercent { get; set; }
-        [Reactive] public Tick TargetTicks { get; set; }
+        [Reactive] public Option<Money> EntryPrice { get; set; }
+        [Reactive] public Option<Lot> Lots { get; set; }
+        [Reactive] public Option<Money> StopLossPrice { get; set; }
+        [Reactive] public Option<Percent> StopLossPercent { get; set; }
+        [Reactive] public Option<Tick> StopLossTicks { get; set; }
+        [Reactive] public Option<Money> TargetPrice { get; set; }
+        [Reactive] public Option<Percent> TargetPercent { get; set; }
+        [Reactive] public Option<Tick> TargetTicks { get; set; }
 
         [Reactive] public bool IsFocusedLots { get; set; }
         [Reactive] public bool IsFocusedStopLossPercent { get; set; }
@@ -159,11 +145,12 @@ namespace BursaCalculator.ViewModel
         [Reactive] public bool IsFocusedTargetPercent { get; set; }
         [Reactive] public bool IsFocusedTargetTick { get; set; }
         [Reactive] public bool IsFocusedAccountRisk { get; set; }
-        [ObservableAsProperty] public Share Shares { get; }
-        [ObservableAsProperty] public Money EntryAmount { get; }
-        [ObservableAsProperty] public Money StopLossAmount { get; }
-        [ObservableAsProperty] public decimal RiskReward { get; }
-        [ObservableAsProperty] public Money TargetAmount { get; }
+
+        [ObservableAsProperty] public Option<Share> Shares { get; }
+        [ObservableAsProperty] public Option<Money> EntryAmount { get; }
+        [ObservableAsProperty] public Option<Money> StopLossAmount { get; }
+        [ObservableAsProperty] public Option<decimal> RiskReward { get; }
+        [ObservableAsProperty] public Option<Money> TargetAmount { get; }
 
         
        

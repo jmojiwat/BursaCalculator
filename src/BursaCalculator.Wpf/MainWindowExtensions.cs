@@ -5,9 +5,15 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.ViewModel;
+using LanguageExt;
+using static BursaCalculator.Core.Infrastructure.LotExtensions;
+using static BursaCalculator.Core.Infrastructure.MoneyExtensions;
+using static BursaCalculator.Core.Infrastructure.PercentExtensions;
+using static BursaCalculator.Core.Infrastructure.ShareExtensions;
+using static BursaCalculator.Core.Infrastructure.TickExtensions;
 using static BursaCalculator.ViewModel.MainWindowViewModelExtensions;
 using static LanguageExt.Prelude;
-using Unit = System.Reactive.Unit;
+// ReSharper disable PossibleNullReferenceException
 
 namespace BursaCalculator.Wpf
 {
@@ -21,89 +27,86 @@ namespace BursaCalculator.Wpf
                 ? ValidForegroundBrush
                 : InvalidForegroundBrush;
 
-        public static SolidColorBrush ChooseBrushColor(bool left, bool right) =>
-            left && right
-                ? ValidForegroundBrush
-                : InvalidForegroundBrush;
-
-        public static void DecrementInt(TextBox textBox) =>
-            parseInt(textBox.Text)
-                .Map(i => i - 1)
-                .IfSome(s => textBox.Text = s.ToString());
-
         public static void DecrementPriceForProperty(MainWindowViewModel viewModel,
-            Expression<Func<MainWindowViewModel, Money>> property)
+            Expression<Func<MainWindowViewModel, Option<Money>>> property)
         {
             if (property.Body is MemberExpression memberSelectorExpression)
             {
                 var pi = memberSelectorExpression.Member as PropertyInfo;
-                var amount = (Money) pi.GetValue(viewModel);
+                var amount = (Option<Money>) pi.GetValue(viewModel);
 
-                pi.SetValue(viewModel, DecrementPrice(amount));
+                pi.SetValue(viewModel, amount.Map(DecrementPrice));
             }
         }
 
         public static void DecrementTickForProperty(MainWindowViewModel viewModel,
-            Expression<Func<MainWindowViewModel, Tick>> property)
+            Expression<Func<MainWindowViewModel, Option<Tick>>> property)
         {
             if (property.Body is MemberExpression memberSelectorExpression)
             {
                 var pi = memberSelectorExpression.Member as PropertyInfo;
-                var ticks = (Tick) pi.GetValue(viewModel);
+                var ticks = (Option<Tick>) pi.GetValue(viewModel);
 
-                pi.SetValue(viewModel, DecrementTick(ticks));
+                pi.SetValue(viewModel, map(ticks, DecrementTick));
             }
         }
 
-        public static void IncrementInt(TextBox textBox) =>
-            parseInt(textBox.Text)
-                .Map(i => i + 1)
-                .IfSome(s => textBox.Text = s.ToString());
-
         public static void IncrementPriceForProperty(MainWindowViewModel viewModel,
-            Expression<Func<MainWindowViewModel, Money>> property)
+            Expression<Func<MainWindowViewModel, Option<Money>>> property)
         {
             if (property.Body is MemberExpression memberSelectorExpression)
             {
                 var pi = memberSelectorExpression.Member as PropertyInfo;
-                var amount = (Money) pi.GetValue(viewModel);
-                pi.SetValue(viewModel, IncrementPrice(amount));
+                var amount = (Option<Money>) pi.GetValue(viewModel);
+
+                pi.SetValue(viewModel, amount.Map(IncrementPrice));
             }
         }
 
         public static void IncrementTickForProperty(MainWindowViewModel viewModel,
-            Expression<Func<MainWindowViewModel, Tick>> property)
+            Expression<Func<MainWindowViewModel, Option<Tick>>> property)
         {
             if (property.Body is MemberExpression memberSelectorExpression)
             {
                 var pi = memberSelectorExpression.Member as PropertyInfo;
-                var ticks = (Tick) pi.GetValue(viewModel);
+                var ticks = (Option<Tick>) pi.GetValue(viewModel);
 
-                pi.SetValue(viewModel, IncrementTick(ticks));
+                pi.SetValue(viewModel, ticks.Map(IncrementTick));
             }
         }
 
-        public static bool IsGreaterThanZero(Money amount) => amount > MoneyExtensions.Money(0);
-        public static bool IsGreaterThanZero(Percent amount) => amount > PercentExtensions.Percent(0);
-        public static bool IsGreaterThanZero(Tick amount) => amount > TickExtensions.Tick(0);
-        public static bool IsGreaterThanZero(Share amount) => amount > ShareExtensions.Share(0);
-        public static bool IsGreaterThanZero(Lot amount) => amount > LotExtensions.Lot(0);
-        public static bool IsGreaterThanZero(decimal amount) => amount > 0;
+        public static bool IsGreaterThanZero(Option<Money> amount) =>
+            amount.Map(m => m > Money(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Percent> amount) =>
+            amount.Map(m => m > Percent(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Tick> amount) =>
+            amount.Map(m => m > Tick(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Share> amount) =>
+            amount.Map(m => m > Share(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Lot> amount) =>
+            amount.Map(m => m > Lot(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<decimal> amount) =>
+            amount.Map(m => m > 0).IfNone(() => false);
 
         public static bool IsValidDecimal(string s) => decimal.TryParse(s, out _);
 
-        public static void KeepTextBoxState(TextBox textBox, Action action)
+        public static (int caretIndex, int textLength) KeepTextBoxState(TextBox textBox, Action action)
         {
             var state = RememberTextBoxState(textBox);
             action();
-            RestoreTextBoxState(state, textBox);
+            return RestoreTextBoxState(state, textBox);
         }
 
 
         private static (int caretIndex, int textLength) RememberTextBoxState(TextBox textBox) =>
             (textBox.CaretIndex, textBox.Text.Length);
 
-        private static Unit RestoreTextBoxState((int caretIndex, int textLength) state, TextBox textBox)
+        private static (int caretIndex, int textLength) RestoreTextBoxState((int caretIndex, int textLength) state, TextBox textBox)
         {
             if (state.caretIndex == state.textLength - 1)
             {
@@ -114,7 +117,7 @@ namespace BursaCalculator.Wpf
                 textBox.CaretIndex = state.caretIndex;
             }
 
-            return Unit.Default;
+            return (textBox.CaretIndex, textBox.Text.Length);
         }
     }
 }

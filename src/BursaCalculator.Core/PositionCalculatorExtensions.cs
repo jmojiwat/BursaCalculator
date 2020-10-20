@@ -9,8 +9,7 @@ namespace BursaCalculator.Core
 {
     public static class PositionCalculatorExtensions
     {
-        public static Money AccountRisk(Money capital, Percent risk) =>
-            capital * risk;
+        public static Money AccountRisk(Money capital, Percent risk) => capital * risk;
 
         public static Option<Share> Shares(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
             SharesToLong(entryPrice, stopLossPrice, accountRisk);

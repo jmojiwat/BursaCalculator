@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using LanguageExt;
 using ReactiveUI;
 
 namespace BursaCalculator.Wpf.TypeConverters
@@ -7,19 +8,26 @@ namespace BursaCalculator.Wpf.TypeConverters
     public class RewardRiskToStringTypeConverter : IBindingTypeConverter
     {
         public int GetAffinityForObjects(Type fromType, Type toType) =>
-            fromType == typeof(decimal) && toType == typeof(string) 
+            fromType == typeof(Option<decimal>) && toType == typeof(string) 
                 ? 10 
                 : 0;
 
-        public bool TryConvert(object @from, Type toType, object conversionHint, out object result)
+        public bool TryConvert(object? @from, Type toType, object? conversionHint, out object? result)
         {
-            var percent = (decimal) @from;
-            var fractional = percent - Math.Truncate(percent);
-            result = fractional == decimal.Zero
-                ? percent.ToString("N0", CultureInfo.CurrentCulture)
-                : percent.ToString("N2", CultureInfo.CurrentCulture);
+            result = from != null
+                ? ((Option<decimal>) from).Map(ToString).IfNone(() => string.Empty)
+                : string.Empty;
 
-            return true;
+            return from != null && ((Option<decimal>) from).IsSome;
         }
+
+        private static string ToString(decimal d)
+        {
+            var fractional = d - Math.Truncate(d);
+            return fractional == decimal.Zero
+                ? d.ToString("N0", CultureInfo.CurrentCulture)
+                : d.ToString("N2", CultureInfo.CurrentCulture);
+        }
+
     }
 }
