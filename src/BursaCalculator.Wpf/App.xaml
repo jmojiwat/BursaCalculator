@@ -36,9 +36,6 @@
                      </EventTrigger>
                  </Style.Triggers>
              </Style>
-             <Style x:Key="UpDown" TargetType="TextBox">
-                 <EventSetter Event="KeyDown" Handler="TextBox_OnKeyDownHandler"></EventSetter>
-             </Style>
              <Style TargetType="Label">
                  <Setter Property="HorizontalAlignment" Value="Left"></Setter>
                  <Setter Property="Height" Value="Auto"></Setter>
