@@ -1,22 +1,17 @@
 ﻿namespace BursaCalculator.CoreF
 
+open System
+open Infrastructure
+
 module PositionCalculatorExtensions =
-    open System
-    open Infrastructure
-    open Infrastructure.InfrastructureExtensions
 
     let accountRisk capital risk =
         capital * risk
 
-//private static Option<Share> SharesToLong(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
-//Try(() => (int) (accountRisk / (entryPrice - stopLossPrice)))
-//    .Map(Share)
-//    .ToOption();
-
     let sharesToLong entryPrice stopLossPrice accountRisk =
         try
             (accountRisk / (entryPrice - stopLossPrice)) |> Money.decimal |> int
-            |> Share |> Some
+            |> share |> Some
         with
         | :? DivideByZeroException -> None
 
@@ -25,14 +20,14 @@ module PositionCalculatorExtensions =
 
     let lots entryPrice stopLossPrice accountRisk =
         sharesToLong entryPrice stopLossPrice accountRisk
-            |> ToLot
+        |> Option.map (fun s -> s |> Share.int |> toLot)
 
     let stopLossAmount entryPrice stopLossPrice lots =
         (entryPrice - stopLossPrice) * lots
 
     let stopLossPercentage entryPrice stopLossPrice =
         try
-            (entryPrice - stopLossPrice) / entryPrice |> ToPercent |> Some
+            (entryPrice - stopLossPrice) / entryPrice |> toPercent |> Some
         with
         | :? DivideByZeroException -> None
 
@@ -44,7 +39,7 @@ module PositionCalculatorExtensions =
 
     let targetPercentage entryPrice targetPrice =
         try
-            (targetPrice - entryPrice) / entryPrice |> ToPercent |> Some
+            (targetPrice - entryPrice) / entryPrice |> toPercent |> Some
         with
         | :? DivideByZeroException -> None
 
@@ -68,3 +63,34 @@ module PositionCalculatorExtensions =
 
     let entryAmount entryPrice lots =
         entryPrice * lots
+
+    let isValidStopLossPrice entryPrice stopLossPrice =
+        entryPrice > stopLossPrice
+
+    let isValidTargetPrice entryPrice targetPrice =
+        entryPrice < targetPrice
+
+module PositionAltCalculatorExtensions =
+    let risk capital accountRisk =
+        try
+            accountRisk / capital
+        with
+        | :? DivideByZeroException -> None
+
+    let stopLossPrice (accountRisk: Money, entryPrice: Money, lots: Lot) =
+        try
+        (lots * entryPrice - accountRisk) / lots |> Some
+        with
+        | :? DivideByZeroException -> None
+
+    let stopLossPrice entryPrice stopLossPecent =
+        entryPrice - entryPrice * stopLossPecent
+
+    let stopLossPrice entryPrice stopLossTick =
+        entryPrice - stopLossTick * (ToTickSize entryPrice)
+
+    let targetPrice entryPrice targetPercent =
+        targetPercent * entryPrice + entryPrice
+
+    let targetPrice entryPrice targetTick =
+        targetTick * (ToTickSize entryPrice) + entryPrice

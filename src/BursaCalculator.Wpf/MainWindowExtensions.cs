@@ -6,11 +6,6 @@ using System.Windows.Media;
 using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.ViewModel;
 using LanguageExt;
-using static BursaCalculator.Core.Infrastructure.LotExtensions;
-using static BursaCalculator.Core.Infrastructure.MoneyExtensions;
-using static BursaCalculator.Core.Infrastructure.PercentExtensions;
-using static BursaCalculator.Core.Infrastructure.ShareExtensions;
-using static BursaCalculator.Core.Infrastructure.TickExtensions;
 using static BursaCalculator.ViewModel.MainWindowViewModelExtensions;
 using static LanguageExt.Prelude;
 // ReSharper disable PossibleNullReferenceException
@@ -24,6 +19,11 @@ namespace BursaCalculator.Wpf
 
         public static SolidColorBrush ChooseBrushColor(bool value) =>
             value
+                ? ValidForegroundBrush
+                : InvalidForegroundBrush;
+
+        public static SolidColorBrush ChooseBrushColor(bool left, bool right) =>
+            left && right
                 ? ValidForegroundBrush
                 : InvalidForegroundBrush;
 
@@ -75,6 +75,7 @@ namespace BursaCalculator.Wpf
             }
         }
 
+        /*
         public static bool IsGreaterThanZero(Option<Money> amount) =>
             amount.Map(m => m > Money(0)).IfNone(() => false);
 
@@ -94,6 +95,7 @@ namespace BursaCalculator.Wpf
             amount.Map(m => m > 0).IfNone(() => false);
 
         public static bool IsValidDecimal(string s) => decimal.TryParse(s, out _);
+        */
 
         public static (int caretIndex, int textLength) KeepTextBoxState(TextBox textBox, Action action)
         {

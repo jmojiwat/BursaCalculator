@@ -62,5 +62,11 @@ namespace BursaCalculator.Core
 
         public static Money EntryAmount(Money entryPrice, Lot lots) =>
             entryPrice * lots;
+
+        public static bool IsValidStopLossPrice(Money entryPrice, Money stopLossPrice) =>
+            entryPrice > stopLossPrice;
+
+        public static bool IsValidTargetPrice(Money entryPrice, Money targetPrice) =>
+            entryPrice < targetPrice;
     }
 }

@@ -2,8 +2,10 @@ using BursaCalculator.Core;
 using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.Persistence;
 using LanguageExt;
+using static BursaCalculator.Core.Infrastructure.LotExtensions;
 using static BursaCalculator.Core.Infrastructure.MoneyExtensions;
 using static BursaCalculator.Core.Infrastructure.PercentExtensions;
+using static BursaCalculator.Core.Infrastructure.ShareExtensions;
 using static BursaCalculator.Core.Infrastructure.TickExtensions;
 using static LanguageExt.Prelude;
 
@@ -27,6 +29,36 @@ namespace BursaCalculator.ViewModel
         public static Money IncrementPrice(Money amount) => amount + ToTickSize(amount);
 
         public static Tick IncrementTick(Tick ticks) => ticks + Tick(1);
+
+        public static bool IsGreaterThanZero(Option<Money> amount) =>
+            amount.Map(m => m > Money(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Percent> amount) =>
+            amount.Map(m => m > Percent(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Tick> amount) =>
+            amount.Map(m => m > Tick(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Share> amount) =>
+            amount.Map(m => m > Share(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<Lot> amount) =>
+            amount.Map(m => m > Lot(0)).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Option<decimal> amount) =>
+            amount.Map(m => m > 0).IfNone(() => false);
+
+        public static bool IsValidStopLossPrice(Option<Money> entryPrice, Option<Money> stopLossPrice) =>
+            (from e in entryPrice
+                from sl in stopLossPrice
+                select PositionCalculatorExtensions.IsValidStopLossPrice(e, sl))
+            .IfNone(() => false);
+
+        public static bool IsValidTargetPrice(Option<Money> entryPrice, Option<Money> targetPrice) =>
+            (from e in entryPrice
+                from sl in targetPrice
+                select PositionCalculatorExtensions.IsValidTargetPrice(e, sl))
+            .IfNone(() => false);
 
         // flatten is a monadic join https://github.com/louthy/language-ext/issues/573
         public static Option<Lot> Lots(Option<Money> entryPrice, Option<Money> stopLossPrice,
@@ -129,20 +161,20 @@ namespace BursaCalculator.ViewModel
         public static MainWindowViewModel ToViewModel(Settings settings) =>
             new MainWindowViewModel
             {
-                Capital = settings.Capital == decimal.MinValue 
-                    ? None 
+                Capital = settings.Capital == decimal.MinValue
+                    ? None
                     : Some(Money(settings.Capital)),
-                Risk = settings.Risk == decimal.MinValue 
-                    ? None 
+                Risk = settings.Risk == decimal.MinValue
+                    ? None
                     : Some(Percent(settings.Risk)),
-                EntryPrice = settings.EntryPrice == decimal.MinValue 
-                    ? None 
+                EntryPrice = settings.EntryPrice == decimal.MinValue
+                    ? None
                     : Some(Money(settings.EntryPrice)),
-                StopLossPrice = settings.StopLossPrice == decimal.MinValue 
-                    ? None 
+                StopLossPrice = settings.StopLossPrice == decimal.MinValue
+                    ? None
                     : Some(Money(settings.StopLossPrice)),
-                TargetPrice = settings.TargetPrice == decimal.MinValue 
-                    ? None 
+                TargetPrice = settings.TargetPrice == decimal.MinValue
+                    ? None
                     : Some(Money(settings.TargetPrice))
             };
     }
