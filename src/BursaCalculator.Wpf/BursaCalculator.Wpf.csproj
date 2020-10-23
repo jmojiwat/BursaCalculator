@@ -19,9 +19,8 @@
 
   <ItemGroup>
     <PackageReference Include="LanguageExt.Core" Version="3.4.15" />
-    <PackageReference Include="ReactiveUI.Events.WPF" Version="11.5.35" />
-    <PackageReference Include="ReactiveUI.Validation" Version="1.7.1" />
-    <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Events.WPF" Version="12.1.1" />
+    <PackageReference Include="ReactiveUI.WPF" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +31,14 @@
 
   <ItemGroup>
     <Compile Remove="TypeConverters\MoneyToStringN0TypeConverter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="BursaCalculator.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="BursaCalculator.ico" />
   </ItemGroup>
 
 </Project>
