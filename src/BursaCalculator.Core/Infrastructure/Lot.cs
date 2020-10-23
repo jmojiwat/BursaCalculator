@@ -2,7 +2,7 @@
 
 namespace BursaCalculator.Core.Infrastructure
 {
-    public readonly struct Lot : IComparable<Lot>
+    public readonly struct Lot : IEquatable<Lot>, IComparable<Lot>
     {
         private readonly int value;
 
@@ -21,29 +21,8 @@ namespace BursaCalculator.Core.Infrastructure
 
         public static explicit operator int(Lot lot) => lot.value;
 
-        public override string ToString() => $"{value} logs";
-        /*
-        public static decimal operator *(decimal left, ShareLot right) => left * right.Unit * 100;
-        
-        public static explicit operator ShareUnit(ShareLot lot) => lot * 100;
-        */
+        public override string ToString() => $"{value} lots";
 
-        /*
-
-        public static decimal operator /(Lot left, decimal right) => left.Unit / right * 100;
-        public static decimal operator /(decimal left, Lot right) => left / right.Unit * 100;
-
-
-        public static bool operator <=(Lot left, decimal right) => left.Unit * 100 <= right;
-        public static bool operator <=(decimal left, Lot right) => left <= right.Unit * 100;
-        public static bool operator <(Lot left, decimal right) => left.Unit * 100 < right;
-        public static bool operator <(decimal left, Lot right) => left < right.Unit * 100;
-
-        public static bool operator >=(Lot left, decimal right) => left.Unit * 100 >= right;
-        public static bool operator >=(decimal left, Lot right) => left >= right.Unit * 100;
-        public static bool operator >(Lot left, decimal right) => left.Unit * 100 > right;
-        public static bool operator >(decimal left, Lot right) => left > right.Unit * 100;
-    */
         public int CompareTo(Lot other) => value.CompareTo(other.value);
 
         public static bool operator <(Lot left, Lot right) => left.CompareTo(right) < 0;
@@ -53,5 +32,15 @@ namespace BursaCalculator.Core.Infrastructure
         public static bool operator <=(Lot left, Lot right) => left.CompareTo(right) <= 0;
 
         public static bool operator >=(Lot left, Lot right) => left.CompareTo(right) >= 0;
+
+        public bool Equals(Lot other) => value == other.value;
+
+        public override bool Equals(object obj) => obj is Lot other && Equals(other);
+
+        public override int GetHashCode() => value;
+
+        public static bool operator ==(Lot left, Lot right) => left.Equals(right);
+
+        public static bool operator !=(Lot left, Lot right) => !left.Equals(right);
     }
 }
