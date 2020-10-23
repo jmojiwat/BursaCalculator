@@ -8,7 +8,12 @@
     xmlns:rxui="http://reactiveui.net"
     xmlns:viewModel="clr-namespace:BursaCalculator.ViewModel;assembly=BursaCalculator.ViewModel"
     mc:Ignorable="d"
-    Title="Bursa Position Calculator" SizeToContent="Height" Width="388" ResizeMode="CanMinimize" Background="#FFE8F0FA">
+    Title="Bursa Position Calculator" 
+    SizeToContent="Height" 
+    Width="388" 
+    ResizeMode="CanMinimize" 
+    Background="#FFE8F0FA"
+    Icon="BursaCalculator.ico">
     <Grid Margin="0,6,0,6" Height="Auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
