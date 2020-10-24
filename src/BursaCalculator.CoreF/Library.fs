@@ -71,9 +71,9 @@ module PositionCalculatorExtensions =
         entryPrice < targetPrice
 
 module PositionAltCalculatorExtensions =
-    let risk capital accountRisk =
+    let risk (capital: Money, accountRisk: Money) =
         try
-            accountRisk / capital
+            accountRisk / capital |> Some
         with
         | :? DivideByZeroException -> None
 
@@ -83,14 +83,14 @@ module PositionAltCalculatorExtensions =
         with
         | :? DivideByZeroException -> None
 
-    let stopLossPrice entryPrice stopLossPecent =
+    let stopLossPriceFromPercent (entryPrice:Money, stopLossPecent:Percent) =
         entryPrice - entryPrice * stopLossPecent
 
-    let stopLossPrice entryPrice stopLossTick =
+    let stopLossPriceFromTick (entryPrice, stopLossTick: Tick) =
         entryPrice - stopLossTick * (ToTickSize entryPrice)
 
-    let targetPrice entryPrice targetPercent =
+    let targetPriceFromPercent (entryPrice: Money, targetPercent: Percent) =
         targetPercent * entryPrice + entryPrice
 
-    let targetPrice entryPrice targetTick =
+    let targetPriceFromTick (entryPrice, targetTick: Tick) =
         targetTick * (ToTickSize entryPrice) + entryPrice
