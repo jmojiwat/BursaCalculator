@@ -10,17 +10,15 @@ module PositionCalculatorExtensions =
 
     let sharesToLong entryPrice stopLossPrice accountRisk =
         try
-            (accountRisk / (entryPrice - stopLossPrice)) |> Money.decimal |> int
-            |> share |> Some
+            (accountRisk / (entryPrice - stopLossPrice)) 
+            |> int 
+            |> shares 
+            |> Some
         with
         | :? DivideByZeroException -> None
 
     let shares entryPrice stopLossPrice accountRisk =
         sharesToLong entryPrice stopLossPrice accountRisk
-
-    let lots entryPrice stopLossPrice accountRisk =
-        sharesToLong entryPrice stopLossPrice accountRisk
-        |> Option.map (fun s -> s |> Share.int |> toLot)
 
     let stopLossAmount entryPrice stopLossPrice lots =
         (entryPrice - stopLossPrice) * lots
@@ -77,9 +75,9 @@ module PositionAltCalculatorExtensions =
         with
         | :? DivideByZeroException -> None
 
-    let stopLossPrice (accountRisk: Money, entryPrice: Money, lots: Lot) =
+    let stopLossPrice (accountRisk: Money, entryPrice: Money, shares: Quantity) =
         try
-        (lots * entryPrice - accountRisk) / lots |> Some
+        (shares * entryPrice - accountRisk) / shares |> Some
         with
         | :? DivideByZeroException -> None
 
