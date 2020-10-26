@@ -19,7 +19,7 @@ namespace BursaCalculator.Core
             this.taxRate = taxRate;
         }
 
-        public CalculatorResult Calculate(decimal purchasePricePerShare, Lot held, decimal sellPricePerShare)
+        public CalculatorResult Calculate(decimal purchasePricePerShare, Quantity held, decimal sellPricePerShare)
         {
             throw new NotImplementedException();
             /*

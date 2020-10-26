@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Infrastructure\Lot.cs" />
+    <Compile Remove="Infrastructure\LotExtensions.cs" />
+    <Compile Remove="Infrastructure\Share.cs" />
+    <Compile Remove="Infrastructure\ShareExtensions.cs" />
     <Compile Remove="Infrastructure\TickSize.cs" />
     <Compile Remove="Infrastructure\TickSizeExtensions.cs" />
   </ItemGroup>

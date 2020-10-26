@@ -2,7 +2,6 @@ using BursaCalculator.Core.Infrastructure;
 using FluentAssertions;
 using LanguageExt.UnitTesting;
 using Xunit;
-using static BursaCalculator.Core.Infrastructure.LotExtensions;
 using static BursaCalculator.Core.Infrastructure.MoneyExtensions;
 using static BursaCalculator.Core.Infrastructure.PercentExtensions;
 using static BursaCalculator.Core.PositionCalculatorExtensions;
@@ -25,13 +24,13 @@ namespace BursaCalculator.Core.Tests
         [InlineData(3.35, 2.59, 1_500, 19)]
         [InlineData(1.07, 0.99, 1_500, 187)]
 
-        public void LotsToBuy_returns_expected_result(decimal entryPrice, decimal stopLossPrice, decimal accountRisk, int expectedResult)
+        public void Lots_returns_expected_result(decimal entryPrice, decimal stopLossPrice, decimal accountRisk, int expectedResult)
         {
-            var result = Lots(Money(entryPrice), Money(stopLossPrice), Money(accountRisk));
+            var result = Shares(Money(entryPrice), Money(stopLossPrice), Money(accountRisk));
+
+            var quantity = expectedResult.Lots();
             
-            var lots = Lot(expectedResult);
-            
-            result.ShouldBeSome(r => r.Should().BeEquivalentTo(lots));
+            result.ShouldBeSome(r => r.Lots.Should().Be(quantity.Lots));
         }
         
         [Theory]
@@ -82,11 +81,11 @@ namespace BursaCalculator.Core.Tests
         }
 
         [Theory]
-        [InlineData(1.07, 0.99, 187, 1496)]
+        [InlineData(1.07, 0.99, 18700, 1496)]
 
-        public void StopLossAmount_returns_expected_result(decimal entryPrice, decimal stopLossPrice, int lots, decimal expectedResult)
+        public void StopLossAmount_returns_expected_result(decimal entryPrice, decimal stopLossPrice, int quantity, decimal expectedResult)
         {
-            var result = StopLossAmount(Money(entryPrice), Money(stopLossPrice), Lot(lots));
+            var result = StopLossAmount(Money(entryPrice), Money(stopLossPrice), quantity.Shares());
             
             result.Should().Be(Money(expectedResult));
         }
@@ -94,9 +93,10 @@ namespace BursaCalculator.Core.Tests
         [Theory]
         [InlineData(1.07, 1.2, 187, 2431)]
 
-        public void TargetAmount_returns_expected_result(decimal entryPrice, decimal stopLossPrice, int lots, decimal expectedResult)
+        public void TargetAmount_returns_expected_result(decimal entryPrice, decimal stopLossPrice, int quantity, decimal expectedResult)
         {
-            var result = TargetAmount(Money(entryPrice), Money(stopLossPrice), Lot(lots));
+            var shares = quantity.Lots();
+            var result = TargetAmount(Money(entryPrice), Money(stopLossPrice), shares);
             
             result.Should().Be(Money(expectedResult));
         }
@@ -106,7 +106,7 @@ namespace BursaCalculator.Core.Tests
 
         public void EntryAmount_returns_expected_result(decimal entryPrice, int lots, decimal expectedResult)
         {
-            var result = EntryAmount(Money(entryPrice), Lot(lots));
+            var result = EntryAmount(Money(entryPrice), lots * UnitsQuantityExtensions.bl);
             
             result.Should().Be(Money(expectedResult));
         }

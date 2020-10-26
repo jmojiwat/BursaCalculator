@@ -11,8 +11,10 @@ namespace BursaCalculator.Core
                 .Map(PercentExtensions.ToPercent)
                 .ToOption();
 
-        public static Option<Money> StopLossPrice(Money accountRisk, Money entryPrice, Lot lots) =>
-            Prelude.Try(() => (lots * entryPrice - accountRisk) / lots)
+        public static Option<Money> StopLossPrice(Money accountRisk, Money entryPrice, Quantity shares) =>
+            Prelude.Try(() => (shares * entryPrice - accountRisk) / shares)
+                .Map(pq => pq.PerShare)
+                .Map(Money)
                 .ToOption();
 
 

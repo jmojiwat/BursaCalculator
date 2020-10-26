@@ -14,7 +14,7 @@
     ResizeMode="CanMinimize" 
     Background="#FFE8F0FA"
     Icon="BursaCalculator.ico">
-    <Grid Margin="0,6,0,6" Height="Auto">
+    <Grid Margin="6,6,6,0" Height="Auto">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="2*"/>

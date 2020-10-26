@@ -20,10 +20,8 @@ namespace BursaCalculator.Wpf
             CurrentMutable.RegisterConstant(new StringToMoneyTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new PercentToStringTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new StringToPercentTypeConverter(), typeof(IBindingTypeConverter));
-            CurrentMutable.RegisterConstant(new LotToStringTypeConverter(), typeof(IBindingTypeConverter));
-            CurrentMutable.RegisterConstant(new StringToLotTypeConverter(), typeof(IBindingTypeConverter));
-            CurrentMutable.RegisterConstant(new ShareToStringTypeConverter(), typeof(IBindingTypeConverter));
-            CurrentMutable.RegisterConstant(new StringToShareTypeConverter(), typeof(IBindingTypeConverter));
+            CurrentMutable.RegisterConstant(new IntToStringTypeConverter(), typeof(IBindingTypeConverter));
+            CurrentMutable.RegisterConstant(new StringToIntTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new TickToStringTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new StringToTickTypeConverter(), typeof(IBindingTypeConverter));
         }

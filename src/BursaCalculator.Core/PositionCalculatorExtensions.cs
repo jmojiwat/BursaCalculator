@@ -1,7 +1,6 @@
 using BursaCalculator.Core.Infrastructure;
 using LanguageExt;
 using static BursaCalculator.Core.Infrastructure.PercentExtensions;
-using static BursaCalculator.Core.Infrastructure.ShareExtensions;
 using static BursaCalculator.Core.Infrastructure.TickExtensions;
 using static LanguageExt.Prelude;
 
@@ -11,15 +10,11 @@ namespace BursaCalculator.Core
     {
         public static Money AccountRisk(Money capital, Percent risk) => capital * risk;
 
-        public static Option<Share> Shares(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
+        public static Option<Quantity> Shares(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
             SharesToLong(entryPrice, stopLossPrice, accountRisk);
 
-        public static Option<Lot> Lots(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
-            SharesToLong(entryPrice, stopLossPrice, accountRisk)
-                .Map(ToLot);
-
-        public static Money StopLossAmount(Money entryPrice, Money stopLossPrice, Lot lots) =>
-            (entryPrice - stopLossPrice) * lots;
+        public static Money StopLossAmount(Money entryPrice, Money stopLossPrice, Quantity shares) =>
+            (entryPrice - stopLossPrice) * shares;
 
         public static Option<Percent> StopLossPercentage(Money entryPice, Money stopLossPrice) =>
             Try(() => (entryPice - stopLossPrice) / entryPice)
@@ -29,8 +24,8 @@ namespace BursaCalculator.Core
         public static Tick StopLossTick(Money entryPice, Money stopLossPrice) => 
             ToTick(entryPice, stopLossPrice);
 
-        public static Money TargetAmount(Money entryPrice, Money targetPrice, Lot lots) =>
-            (targetPrice - entryPrice) * lots;
+        public static Money TargetAmount(Money entryPrice, Money targetPrice, Quantity shares) =>
+            (targetPrice - entryPrice) * shares;
 
         public static Option<Percent> TargetPercentage(Money entryPice, Money targetPrice) =>
             Try(() => (targetPrice - entryPice) / entryPice)
@@ -55,13 +50,13 @@ namespace BursaCalculator.Core
                 .ToOption();
         }
 
-        private static Option<Share> SharesToLong(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
+        private static Option<Quantity> SharesToLong(Money entryPrice, Money stopLossPrice, Money accountRisk) =>
             Try(() => (int) (accountRisk / (entryPrice - stopLossPrice)))
-                .Map(Share)
+                .Map(i => i.Shares())
                 .ToOption();
 
-        public static Money EntryAmount(Money entryPrice, Lot lots) =>
-            entryPrice * lots;
+        public static Money EntryAmount(Money entryPrice, Quantity shares) =>
+            entryPrice * shares;
 
         public static bool IsValidStopLossPrice(Money entryPrice, Money stopLossPrice) =>
             entryPrice > stopLossPrice;

@@ -2,7 +2,6 @@ using BursaCalculator.Core.Infrastructure;
 using FluentAssertions;
 using LanguageExt.UnitTesting;
 using Xunit;
-using static BursaCalculator.Core.Infrastructure.LotExtensions;
 using static BursaCalculator.Core.Infrastructure.MoneyExtensions;
 using static BursaCalculator.Core.Infrastructure.PercentExtensions;
 using static BursaCalculator.Core.PositionAltCalculatorExtensions;
@@ -27,7 +26,7 @@ namespace BursaCalculator.Core.Tests
 
         public void StopLossPrice_returns_expected_result(decimal accountRisk, decimal entryPrice, int lots, decimal expectedResult)
         {
-            var result = StopLossPrice(Money(accountRisk), Money(entryPrice), Lot(lots));
+            var result = StopLossPrice(Money(accountRisk), Money(entryPrice), lots.Lots());
             
             result.ShouldBeSome(r => r.Should().Be(Money(expectedResult)));
         }

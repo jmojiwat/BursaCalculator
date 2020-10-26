@@ -75,28 +75,6 @@ namespace BursaCalculator.Wpf
             }
         }
 
-        /*
-        public static bool IsGreaterThanZero(Option<Money> amount) =>
-            amount.Map(m => m > Money(0)).IfNone(() => false);
-
-        public static bool IsGreaterThanZero(Option<Percent> amount) =>
-            amount.Map(m => m > Percent(0)).IfNone(() => false);
-
-        public static bool IsGreaterThanZero(Option<Tick> amount) =>
-            amount.Map(m => m > Tick(0)).IfNone(() => false);
-
-        public static bool IsGreaterThanZero(Option<Share> amount) =>
-            amount.Map(m => m > Share(0)).IfNone(() => false);
-
-        public static bool IsGreaterThanZero(Option<Lot> amount) =>
-            amount.Map(m => m > Lot(0)).IfNone(() => false);
-
-        public static bool IsGreaterThanZero(Option<decimal> amount) =>
-            amount.Map(m => m > 0).IfNone(() => false);
-
-        public static bool IsValidDecimal(string s) => decimal.TryParse(s, out _);
-        */
-
         public static (int caretIndex, int textLength) KeepTextBoxState(TextBox textBox, Action action)
         {
             var state = RememberTextBoxState(textBox);

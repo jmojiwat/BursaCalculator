@@ -5,11 +5,11 @@
     <Application.Resources>
          <ResourceDictionary>
              <Style x:Key="LeftPanel" TargetType="StackPanel">
-                 <Setter Property="Margin" Value="6,0,3,3"></Setter>
+                 <Setter Property="Margin" Value="0,0,3,6"></Setter>
                  <Setter Property="Background" Value="White"></Setter>
              </Style>
              <Style x:Key="RightPanel" TargetType="StackPanel">
-                 <Setter Property="Margin" Value="3,0,6,3"></Setter>
+                 <Setter Property="Margin" Value="3,0,0,6"></Setter>
                  <Setter Property="Background" Value="White"></Setter>
              </Style>
              <Style x:Key="ControlGroup" TargetType="StackPanel">

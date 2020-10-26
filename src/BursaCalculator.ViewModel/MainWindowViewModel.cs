@@ -90,7 +90,7 @@ namespace BursaCalculator.ViewModel
 
             this.WhenAnyValue(vm => vm.Lots)
                 .Where(l => IsFocusedLots)
-                .Select(l => StopLossPrice(AccountRisk, EntryPrice, l))
+                .Select(l => StopLossPrice(AccountRisk, EntryPrice, l.Map(x => x.Lots())))
                 .Subscribe(o => StopLossPrice = o);
 
 
@@ -201,7 +201,7 @@ namespace BursaCalculator.ViewModel
         [Reactive] public Option<Money> AccountRisk { get; set; }
 
         [Reactive] public Option<Money> EntryPrice { get; set; }
-        [Reactive] public Option<Lot> Lots { get; set; }
+        [Reactive] public Option<int> Lots { get; set; }
         [Reactive] public Option<Money> StopLossPrice { get; set; }
         [Reactive] public Option<Percent> StopLossPercent { get; set; }
         [Reactive] public Option<Tick> StopLossTicks { get; set; }
@@ -216,7 +216,7 @@ namespace BursaCalculator.ViewModel
         [Reactive] public bool IsFocusedTargetTick { get; set; }
         [Reactive] public bool IsFocusedAccountRisk { get; set; }
 
-        [ObservableAsProperty] public Option<Share> Shares { get; }
+        [ObservableAsProperty] public Option<int> Shares { get; }
         [ObservableAsProperty] public Option<Money> EntryAmount { get; }
         [ObservableAsProperty] public Option<Money> StopLossAmount { get; }
         [ObservableAsProperty] public Option<decimal> RiskReward { get; }

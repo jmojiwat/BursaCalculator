@@ -30,7 +30,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="TypeConverters\LotToStringTypeConverter.cs" />
     <Compile Remove="TypeConverters\MoneyToStringN0TypeConverter.cs" />
+    <Compile Remove="TypeConverters\ShareToStringTypeConverter.cs" />
+    <Compile Remove="TypeConverters\StringToLotTypeConverter.cs" />
+    <Compile Remove="TypeConverters\StringToShareTypeConverter.cs" />
   </ItemGroup>
 
   <ItemGroup>
