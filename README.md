@@ -42,7 +42,7 @@ The tick size depends on the price and is determined by Bursa Malaysia.
 | RM10.00 to RM99.98 | RM0.02 |
 | RM100 above | RM0.10 |
 
-*e.g.* Make small adjustments to **Entry Price** to determine how it affects your **Entry Amount** and the number of Lots you will be purchasing.
+*e.g.* Make small adjustments to **Entry Price** to determine how it affects your **Entry Amount** and the number of **Lots** you will be purchasing.
 
 ![alt text](assets/price-adjust.gif)
 
