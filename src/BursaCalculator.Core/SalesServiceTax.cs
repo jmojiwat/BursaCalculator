@@ -1,9 +1,9 @@
 namespace BursaCalculator.Core
 {
-    public class SalesServiceTax
+    public record SalesServiceTax
     {
-        public decimal Brokerage { get; set; }
-        public decimal ClearingFee { get; set; }
-        public decimal StampDuty { get; set; }
+        public decimal Brokerage { get; init; }
+        public decimal ClearingFee { get; init; }
+        public decimal StampDuty { get; init; }
     }
 }

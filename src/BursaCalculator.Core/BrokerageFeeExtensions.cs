@@ -7,6 +7,9 @@ namespace BursaCalculator.Core
 {
     public static class BrokerageFeeExtensions
     {
+        public static BrokerageFee BrokerageFee(decimal percentageFee, decimal onlineTradingRebate, decimal stocks) =>
+         new BrokerageFee(percentageFee, onlineTradingRebate, stocks);
+
         public static decimal CalculateBrokerageFee(BrokerageFeeRate rate, decimal amount) =>
             PercentageBrokerageFee(rate.PercentageRates, amount) -
             CalculateOnlineTradingRebate(rate, amount);

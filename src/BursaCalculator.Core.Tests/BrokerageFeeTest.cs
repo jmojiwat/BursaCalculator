@@ -11,6 +11,7 @@ namespace BursaCalculator.Core.Tests
     {
         [Theory]
         [InlineData(500, 3.5)]
+        [InlineData(15_020, 105.14)]
         public void CalculateBrokerageFee_returns_expexted_result(decimal amount, decimal expectedResult)
         {
             var percentageRates = new List<BrokeragePercentageRate>
@@ -29,4 +30,5 @@ namespace BursaCalculator.Core.Tests
             result.Should().Be(expectedResult);
         }
     }
+
 }

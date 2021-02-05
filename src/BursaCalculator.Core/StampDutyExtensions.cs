@@ -17,5 +17,6 @@ namespace BursaCalculator.Core
 
         private static int MultipleCount(decimal forEvery, decimal amount) =>
             (int) Math.Floor(amount / forEvery);
+
     }
 }

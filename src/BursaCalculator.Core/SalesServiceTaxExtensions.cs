@@ -2,12 +2,21 @@
 {
     public static class SalesServiceTaxExtensions
     {
-        public static SalesServiceTax CalculateSalesServiceTax(SalesServiceTaxRate taxRate, decimal amount) =>
+        public static SalesServiceTax CalculateSalesServiceTax(SalesServiceTaxRate taxRate, in decimal brokerageFee,
+            in decimal clearingFee, in decimal stampDuty) =>
             new SalesServiceTax
             {
-                Brokerage = taxRate.Brokerage * amount,
-                ClearingFee = taxRate.ClearingFee * amount,
-                StampDuty = taxRate.StampDuty * amount
+                Brokerage = taxRate.Brokerage * brokerageFee,
+                ClearingFee = taxRate.ClearingFee * clearingFee,
+                StampDuty = taxRate.StampDuty * stampDuty
+            };
+
+        public static SalesServiceTax CalculateSalesServiceTax(SalesServiceTaxRate taxRate, TaxableFees fees) =>
+            new SalesServiceTax
+            {
+                Brokerage = taxRate.Brokerage * fees.Brokerage,
+                ClearingFee = taxRate.ClearingFee * fees.ClearingFee,
+                StampDuty = taxRate.StampDuty * fees.StampDuty
             };
 
         public static decimal ToTotal(SalesServiceTax tax) =>

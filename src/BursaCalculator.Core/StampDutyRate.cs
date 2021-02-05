@@ -2,7 +2,7 @@
 
 namespace BursaCalculator.Core
 {
-    public class StampDutyRate
+    public record StampDutyRate
     {
         public StampDutyRate(decimal amount, decimal forEvery, decimal maxAmount)
         {
@@ -13,8 +13,8 @@ namespace BursaCalculator.Core
             MaxAmount = maxAmount;
         }
 
-        public decimal Amount { get; }
-        public decimal ForEvery { get; }
-        public decimal MaxAmount { get; }
+        public decimal Amount { get; private init; }
+        public decimal ForEvery { get; private init; }
+        public decimal MaxAmount { get; private init; }
     }
 }

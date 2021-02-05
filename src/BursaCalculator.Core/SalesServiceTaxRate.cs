@@ -2,7 +2,7 @@
 
 namespace BursaCalculator.Core
 {
-    public class SalesServiceTaxRate
+    public record SalesServiceTaxRate
     {
         public SalesServiceTaxRate(Percent brokerage, Percent clearingFee, Percent stampDuty)
         {
@@ -11,8 +11,8 @@ namespace BursaCalculator.Core
             StampDuty = stampDuty;
         }
 
-        public Percent Brokerage { get; }
-        public Percent ClearingFee { get; }
-        public Percent StampDuty { get; }
+        public Percent Brokerage { get; private init; }
+        public Percent ClearingFee { get; private init; }
+        public Percent StampDuty { get; private init; }
     }
 }

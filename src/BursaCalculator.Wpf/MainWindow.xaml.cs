@@ -33,7 +33,7 @@ namespace BursaCalculator.Wpf
 
                 BindEvents(disposableRegistration);
 
-                WhenAnyValid(disposableRegistration);
+//                WhenAnyValid(disposableRegistration);
             });
         }
 
@@ -232,90 +232,119 @@ namespace BursaCalculator.Wpf
                     v => v.RiskRewardTextBlock.Text, null, 
                     new RewardRiskToStringTypeConverter())
                 .DisposeWith(disposableRegistration);
-        }
 
-        private void WhenAnyValid(CompositeDisposable disposableRegistration)
-        {
-            this.WhenAnyValue(view => view.ViewModel.IsValidCapital,
-                    ChooseBrushColor)
-                .BindTo(this, view => view.CapitalTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidCapital,
+                    v => v.CapitalTextBox.Foreground, 
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidRisk,
-                    ChooseBrushColor)
-                .BindTo(this, view => view.RiskTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidRisk,
+                    v => v.RiskTextBox.Foreground, 
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidAccountRisk,
-                    ChooseBrushColor)
-                .BindTo(this, view => view.AccountRiskTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidAccountRisk,
+                    v => v.AccountRiskTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidEntryPrice,
-                    ChooseBrushColor)
-                .BindTo(this, view => view.EntryPriceTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidEntryPriceStopLossPrice,
+                    v => v.EntryPriceTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidLots,
-                    ChooseBrushColor)
-                .BindTo(this, view => view.LotsTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidLots,
+                    v => v.LotsTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidShares, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.SharesTextBlock.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidShares, 
+                    v => v.SharesTextBlock.Foreground,
+                    null,
+                        new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidEntryAmount, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.EntryAmountTextBlock.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidEntryAmount, 
+                    v => v.EntryAmountTextBlock.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossPrice,
-                    view => view.ViewModel.IsStopLossPriceLessThanEntryPrice, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.StopLossPriceTextBox.Foreground)
+            // todo: figure out why this isn't working
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidEntryPriceStopLossPrice,
+                    v => v.StopLossPriceTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossPercent, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.StopLossPercentTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidStopLossPercent, 
+                    v => v.StopLossPercentTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossTicks, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.StopLossTicksTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidStopLossTicks, 
+                    v => v.StopLossTicksTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidStopLossAmount, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.StopLossAmountTextBlock.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidStopLossAmount, 
+                    v => v.StopLossAmountTextBlock.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidTargetPrice,
-                    view => view.ViewModel.IsTargetPriceMoreThanEntryPrice, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.TargetPriceTextBox.Foreground)
+            // todo: figure out why this isn't working
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidTargetPrice, 
+                    v => v.TargetPriceTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidTargetPercent, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.TargetPercentTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidTargetPercent, 
+                    view => view.TargetPercentTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidTargetTicks, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.TargetTicksTextBox.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidTargetTicks, 
+                    v => v.TargetTicksTextBox.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidTargetAmount, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.TargetAmountTextBlock.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidTargetAmount, 
+                    v => v.TargetAmountTextBlock.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
-            this.WhenAnyValue(view => view.ViewModel.IsValidRiskReward, 
-                    ChooseBrushColor)
-                .BindTo(this, view => view.RiskRewardTextBlock.Foreground)
+            this.OneWayBind(ViewModel,
+                    vm => vm.IsValidRiskReward, 
+                    v => v.RiskRewardTextBlock.Foreground,
+                    null,
+                    new BoolToColourTypeConverter())
                 .DisposeWith(disposableRegistration);
 
         }

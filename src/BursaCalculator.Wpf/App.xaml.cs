@@ -24,6 +24,7 @@ namespace BursaCalculator.Wpf
             CurrentMutable.RegisterConstant(new StringToIntTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new TickToStringTypeConverter(), typeof(IBindingTypeConverter));
             CurrentMutable.RegisterConstant(new StringToTickTypeConverter(), typeof(IBindingTypeConverter));
+            CurrentMutable.RegisterConstant(new BoolToColourTypeConverter(), typeof(IBindingTypeConverter));
         }
     }
 }

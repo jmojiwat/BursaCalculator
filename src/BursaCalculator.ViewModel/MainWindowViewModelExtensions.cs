@@ -1,3 +1,4 @@
+using System.Linq;
 using BursaCalculator.Core;
 using BursaCalculator.Core.Infrastructure;
 using BursaCalculator.Persistence;
@@ -11,7 +12,7 @@ namespace BursaCalculator.ViewModel
 {
     public static class MainWindowViewModelExtensions
     {
-        public static Option<Money> AccountRisk(Option<Money> capital, Option<Percent> risk) =>
+        public static Option<Money> CalculateAccountRisk(Option<Money> capital, Option<Percent> risk) =>
             from c in capital
             from r in risk
             select PositionCalculatorExtensions.AccountRisk(c, r);
@@ -29,7 +30,10 @@ namespace BursaCalculator.ViewModel
         public static Tick IncrementTick(Tick ticks) => ticks + Tick(1);
 
         public static bool IsGreaterThanZero(Option<Money> value) =>
-            value.Map(m => m > Money(0)).IfNone(() => false);
+            value.Map(IsGreaterThanZero).IfNone(() => false);
+
+        public static bool IsGreaterThanZero(Money value) =>
+            value > Money(0);
 
         public static bool IsGreaterThanZero(Option<Percent> vaule) =>
             vaule.Map(m => m > Percent(0)).IfNone(() => false);
@@ -41,12 +45,18 @@ namespace BursaCalculator.ViewModel
             value.Map(m => m > 0).IfNone(() => false);
 
         public static bool IsGreaterThanZero(Option<int> value) =>
-            value.Map(m => m > 0).IfNone(() => false);
+            value.Map(m => m > 0).IfNone(() => false);  
 
-        public static bool IsValidStopLossPrice(Option<Money> entryPrice, Option<Money> stopLossPrice) =>
+        public static bool IsValidEntryPriceStopLossPrice(Option<Money> entryPrice, Option<Money> stopLossPrice) =>
             (from e in entryPrice
-                from sl in stopLossPrice
-                select PositionCalculatorExtensions.IsValidStopLossPrice(e, sl))
+             from sl in stopLossPrice
+             let isEntryPriceGreaterThanZero = IsGreaterThanZero(e)
+             let isStopLossPriceGreaterThanZero = IsGreaterThanZero(sl)
+             let isEntryPriceGreaterThanStopLoss = PositionCalculatorExtensions.IsValidStopLossPrice(e, sl)
+             select 
+                 isEntryPriceGreaterThanZero && 
+                 isStopLossPriceGreaterThanZero && 
+                 isEntryPriceGreaterThanStopLoss)
             .IfNone(() => false);
 
         public static bool IsValidTargetPrice(Option<Money> entryPrice, Option<Money> targetPrice) =>
@@ -153,7 +163,7 @@ namespace BursaCalculator.ViewModel
             };
 
         public static MainWindowViewModel ToViewModel(Settings settings) =>
-            new MainWindowViewModel
+            new()
             {
                 Capital = settings.Capital == decimal.MinValue
                     ? None
@@ -171,5 +181,61 @@ namespace BursaCalculator.ViewModel
                     ? None
                     : Some(Money(settings.TargetPrice))
             };
+
+        public static Fee ToFee(FeeSettings settings)
+        {
+            var brokeragePercentageRate = settings.BrokeragePercentageRates
+                .Map(r => new BrokeragePercentageRate(r.AmountFrom, Percent(r.Rate)))
+                .OrderBy(r => r.AmountFrom);
+
+            var broker = new BrokerageFeeRate(
+                brokeragePercentageRate, 
+                Percent(settings.BrokerageOnlineTradingRebate), 
+                settings.BrokerageMinimumFee, 
+                Percent(settings.BrokerageIntraDayFee));
+
+            var clearing = new ClearingFeeRate(
+                Percent(settings.ClearingClearingRate),
+                settings.ClearingMaximumFee);
+
+            var stampDuty = new StampDutyRate(
+                settings.StampDutyAmount,
+                settings.StampDutyForEvery,
+                settings.StampDutyMaxAmount);
+
+            var salesServiceTax = new SalesServiceTaxRate(
+                Percent(settings.SalesServiceTaxRateBrokerage),
+                Percent(settings.SalesServiceTaxRateClearingFee),
+                Percent(settings.SalesServiceTaxRateStampDuty));
+
+            return new Fee(broker, clearing, stampDuty, salesServiceTax);
+        }
+
+        public static FeeSettings ToSettings(Fee fee)
+        {
+            return new()
+            {
+                BrokeragePercentageRates = fee.BrokerageFeeRate.PercentageRates
+                    .Map(r => new BrokeragePercentageRateSettings
+                    {
+                        AmountFrom = r.AmountFrom,
+                        Rate = (decimal) r.Rate
+                    }),
+                BrokerageOnlineTradingRebate = (decimal) fee.BrokerageFeeRate.OnlineTradingRebate,
+                BrokerageMinimumFee = fee.BrokerageFeeRate.MinimumFee,
+                BrokerageIntraDayFee = (decimal) fee.BrokerageFeeRate.IntraDayFee,
+
+                ClearingClearingRate = (decimal) fee.ClearingFeeRate.ClearingRate,
+                ClearingMaximumFee = fee.ClearingFeeRate.MaximumFee,
+
+                StampDutyAmount = fee.StampDutyRate.Amount,
+                StampDutyForEvery = fee.StampDutyRate.ForEvery,
+                StampDutyMaxAmount = fee.StampDutyRate.MaxAmount,
+
+                SalesServiceTaxRateBrokerage = (decimal) fee.SalesServiceTaxRate.Brokerage,
+                SalesServiceTaxRateClearingFee = (decimal) fee.SalesServiceTaxRate.ClearingFee,
+                SalesServiceTaxRateStampDuty = (decimal) fee.SalesServiceTaxRate.StampDuty
+            };
+        }
     }
 }

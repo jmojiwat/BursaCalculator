@@ -1,9 +1,8 @@
 ﻿namespace BursaCalculator.Core
 {
-    public class Fee
+    public record Fee
     {
-        public Fee(BrokerageFeeRate brokerageFeeRate, ClearingFeeRate clearingFeeRate, StampDutyRate stampDutyRate,
-            SalesServiceTaxRate salesServiceTaxRate)
+        public Fee(BrokerageFeeRate brokerageFeeRate, ClearingFeeRate clearingFeeRate, StampDutyRate stampDutyRate, SalesServiceTaxRate salesServiceTaxRate)
         {
             BrokerageFeeRate = brokerageFeeRate;
             ClearingFeeRate = clearingFeeRate;
@@ -11,13 +10,10 @@
             SalesServiceTaxRate = salesServiceTaxRate;
         }
 
-        public BrokerageFeeRate BrokerageFeeRate { get; }
-        public ClearingFeeRate ClearingFeeRate { get; }
-        public StampDutyRate StampDutyRate { get; }
-        public SalesServiceTaxRate SalesServiceTaxRate { get; }
+        public BrokerageFeeRate BrokerageFeeRate { get; private init; }
+        public ClearingFeeRate ClearingFeeRate { get; private init; }
+        public StampDutyRate StampDutyRate { get; private init; }
+        public SalesServiceTaxRate SalesServiceTaxRate { get; private init; }
     }
 
-    public class FeeExtensions
-    {
-    }
 }

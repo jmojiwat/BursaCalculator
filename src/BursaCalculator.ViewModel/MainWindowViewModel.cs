@@ -1,4 +1,5 @@
 using System;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using BursaCalculator.Core.Infrastructure;
 using LanguageExt;
@@ -8,193 +9,155 @@ using static BursaCalculator.ViewModel.MainWindowViewModelExtensions;
 
 namespace BursaCalculator.ViewModel
 {
-    public class MainWindowViewModel : ReactiveObject
+    public sealed class MainWindowViewModel : ReactiveObject, IDisposable
     {
+        private readonly CompositeDisposable disposables = new();
+//        private Fee fee;
+
         public MainWindowViewModel()
         {
+            /*
+            fee = ToFee(RetrieveFeeSettings());
+            PersistFeeSettings(ToSettings(fee));
+            */
+
             this.WhenAnyValue(
                     vm => vm.Capital,
                     vm => vm.Risk,
-                    MainWindowViewModelExtensions.AccountRisk)
-                .Subscribe(o => AccountRisk = o);
+                    CalculateAccountRisk)
+                .Subscribe(o => AccountRisk = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     vm => vm.AccountRisk,
                     MainWindowViewModelExtensions.Lots)
-                .Subscribe(o => Lots = o);
+                .Subscribe(o => Lots = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     vm => vm.AccountRisk,
                     MainWindowViewModelExtensions.Shares)
-                .ToPropertyEx(this, vm => vm.Shares);
+                .ToPropertyEx(this, vm => vm.Shares)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.Lots,
                     MainWindowViewModelExtensions.EntryAmount)
-                .ToPropertyEx(this, vm => vm.EntryAmount);
+                .ToPropertyEx(this, vm => vm.EntryAmount)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     StopLossPercentage)
-                .Subscribe(o => StopLossPercent = o);
+                .Subscribe(o => StopLossPercent = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     StopLossTick)
-                .Subscribe(o => StopLossTicks = o);
+                .Subscribe(o => StopLossTicks = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     vm => vm.Lots,
                     MainWindowViewModelExtensions.StopLossAmount)
-                .ToPropertyEx(this, vm => vm.StopLossAmount);
+                .ToPropertyEx(this, vm => vm.StopLossAmount)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.TargetPrice,
                     TargetPercentage)
-                .Subscribe(o => TargetPercent = o);
+                .Subscribe(o => TargetPercent = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.TargetPrice,
                     TargetTick)
-                .Subscribe(o => TargetTicks = o);
+                .Subscribe(o => TargetTicks = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.TargetPrice,
                     vm => vm.Lots,
                     MainWindowViewModelExtensions.TargetAmount)
-                .ToPropertyEx(this, vm => vm.TargetAmount);
+                .ToPropertyEx(this, vm => vm.TargetAmount)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(
                     vm => vm.EntryPrice,
                     vm => vm.StopLossPrice,
                     vm => vm.TargetPrice,
                     MainWindowViewModelExtensions.RiskReward)
-                .ToPropertyEx(this, vm => vm.RiskReward);
+                .ToPropertyEx(this, vm => vm.RiskReward)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(vm => vm.AccountRisk)
                 .Where(ar => IsFocusedAccountRisk)
                 .Select(ar => Risk(Capital, ar))
-                .Subscribe(o => Risk = o);
+                .Subscribe(o => Risk = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(vm => vm.Lots)
                 .Where(l => IsFocusedLots)
                 .Select(l => StopLossPrice(AccountRisk, EntryPrice, l.Map(x => x.Lots())))
-                .Subscribe(o => StopLossPrice = o);
+                .Subscribe(o => StopLossPrice = o)
+                .DisposeWith(disposables);
 
 
             this.WhenAnyValue(vm => vm.StopLossPercent)
                 .Where(slp => IsFocusedStopLossPercent)
                 .Select(slp => StopLossPrice(EntryPrice, slp))
-                .Subscribe(o => StopLossPrice = o);
+                .Subscribe(o => StopLossPrice = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(vm => vm.StopLossTicks)
                 .Where(slt => IsFocusedStopLossTick)
                 .Select(slt => StopLossPrice(EntryPrice, slt))
-                .Subscribe(o => StopLossPrice = o);
+                .Subscribe(o => StopLossPrice = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(vm => vm.TargetPercent)
                 .Where(tp => IsFocusedTargetPercent)
                 .Select(tp => TargetPrice(EntryPrice, tp))
-                .Subscribe(o => TargetPrice = o);
+                .Subscribe(o => TargetPrice = o)
+                .DisposeWith(disposables);
 
             this.WhenAnyValue(vm => vm.TargetTicks)
                 .Where(tt => IsFocusedTargetTick)
                 .Select(tt => TargetPrice(EntryPrice, tt))
-                .Subscribe(o => StopLossPrice = o);
+                .Subscribe(o => StopLossPrice = o)
+                .DisposeWith(disposables);
 
             ObserveViewModelProperties();
         }
 
-        private void ObserveViewModelProperties()
-        {
-            this.WhenAnyValue(vm => vm.Capital, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidCapital);
-
-            this.WhenAnyValue(vm => vm.Risk, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidRisk);
-
-            this.WhenAnyValue(vm => vm.AccountRisk, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidAccountRisk);
-
-            this.WhenAnyValue(vm => vm.EntryPrice, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidEntryPrice);
-
-            this.WhenAnyValue(vm => vm.Lots, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidLots);
-
-            this.WhenAnyValue(vm => vm.Shares, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidShares);
-
-            this.WhenAnyValue(vm => vm.EntryAmount, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidEntryAmount);
-
-            this.WhenAnyValue(vm => vm.StopLossPrice, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidStopLossPrice);
-
-            this.WhenAnyValue(vm => vm.StopLossPercent, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidStopLossPercent);
-
-            this.WhenAnyValue(vm => vm.StopLossTicks, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidStopLossTicks);
-
-            this.WhenAnyValue(vm => vm.StopLossAmount, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidStopLossAmount);
-
-            this.WhenAnyValue(vm => vm.TargetPrice, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidTargetPrice);
-
-            this.WhenAnyValue(vm => vm.TargetPercent, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidTargetPercent);
-
-            this.WhenAnyValue(vm => vm.TargetTicks, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidTargetTicks);
-
-            this.WhenAnyValue(vm => vm.TargetAmount, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidTargetAmount);
-
-            this.WhenAnyValue(vm => vm.RiskReward, IsGreaterThanZero)
-                .BindTo(this, vm => vm.IsValidRiskReward);
-
-            this.WhenAnyValue(vm => vm.EntryPrice, vm => vm.StopLossPrice,
-                    MainWindowViewModelExtensions.IsValidStopLossPrice)
-                .BindTo(this, vm => vm.IsStopLossPriceLessThanEntryPrice);
-
-            this.WhenAnyValue(vm => vm.EntryPrice, vm => vm.TargetPrice,
-                    MainWindowViewModelExtensions.IsValidTargetPrice)
-                .BindTo(this, vm => vm.IsTargetPriceMoreThanEntryPrice);
-        }
-
-        [Reactive] public bool IsValidCapital { get; set; }
-        [Reactive] public bool IsValidRisk { get; set; }
-        [Reactive] public bool IsValidAccountRisk { get; set; }
-        [Reactive] public bool IsValidEntryPrice { get; set; }
-        [Reactive] public bool IsValidLots { get; set; }
-        [Reactive] public bool IsValidShares { get; set; }
-        [Reactive] public bool IsValidEntryAmount { get; set; }
-        [Reactive] public bool IsValidStopLossPrice { get; set; }
-        [Reactive] public bool IsValidStopLossPercent { get; set; }
-        [Reactive] public bool IsValidStopLossTicks { get; set; }
-        [Reactive] public bool IsValidStopLossAmount { get; set; }
-        [Reactive] public bool IsValidTargetPrice { get; set; }
-        [Reactive] public bool IsValidTargetPercent { get; set; }
-        [Reactive] public bool IsValidTargetTicks { get; set; }
-        [Reactive] public bool IsValidTargetAmount { get; set; }
-        [Reactive] public bool IsValidRiskReward { get; set; }
-
-        [Reactive] public bool IsStopLossPriceLessThanEntryPrice { get; set; }
-        [Reactive] public bool IsTargetPriceMoreThanEntryPrice { get; set; }
+        [ObservableAsProperty] public bool IsValidCapital { get; }
+        [ObservableAsProperty] public bool IsValidRisk { get; }
+        [ObservableAsProperty] public bool IsValidAccountRisk { get; }
+        [ObservableAsProperty] public bool IsValidEntryPriceStopLossPrice { get; }
+        [ObservableAsProperty] public bool IsValidLots { get; }
+        [ObservableAsProperty] public bool IsValidShares { get; }
+        [ObservableAsProperty] public bool IsValidEntryAmount { get; }
+        [ObservableAsProperty] public bool IsValidStopLossPercent { get; }
+        [ObservableAsProperty] public bool IsValidStopLossTicks { get; }
+        [ObservableAsProperty] public bool IsValidStopLossAmount { get; }
+        [ObservableAsProperty] public bool IsValidTargetPrice { get; }
+        [ObservableAsProperty] public bool IsValidTargetPercent { get; }
+        [ObservableAsProperty] public bool IsValidTargetTicks { get; }
+        [ObservableAsProperty] public bool IsValidTargetAmount { get; }
+        [ObservableAsProperty] public bool IsValidRiskReward { get; }
 
         [Reactive] public Option<Money> Capital { get; set; }
         [Reactive] public Option<Percent> Risk { get; set; }
@@ -222,7 +185,80 @@ namespace BursaCalculator.ViewModel
         [ObservableAsProperty] public Option<decimal> RiskReward { get; }
         [ObservableAsProperty] public Option<Money> TargetAmount { get; }
 
-        
-       
+
+        public void Dispose()
+        {
+            disposables?.Dispose();
+        }
+
+        private void ObserveViewModelProperties()
+        {
+            this.WhenAnyValue(vm => vm.Capital, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidCapital)
+                .DisposeWith(disposables);
+
+
+            this.WhenAnyValue(vm => vm.Risk, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidRisk)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.AccountRisk, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidAccountRisk)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(
+                    vm => vm.EntryPrice,
+                    vm => vm.StopLossPrice,
+                    MainWindowViewModelExtensions.IsValidEntryPriceStopLossPrice)
+                .ToPropertyEx(this, vm => vm.IsValidEntryPriceStopLossPrice)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(
+                    vm => vm.EntryPrice,
+                    vm => vm.TargetPrice,
+                    MainWindowViewModelExtensions.IsValidTargetPrice)
+                .ToPropertyEx(this, vm => vm.IsValidTargetPrice)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.Lots, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidLots)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.Shares, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidShares)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.EntryAmount, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidEntryAmount)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.StopLossPercent, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidStopLossPercent)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.StopLossTicks, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidStopLossTicks)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.StopLossAmount, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidStopLossAmount)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.TargetPercent, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidTargetPercent)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.TargetTicks, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidTargetTicks)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.TargetAmount, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidTargetAmount)
+                .DisposeWith(disposables);
+
+            this.WhenAnyValue(vm => vm.RiskReward, IsGreaterThanZero)
+                .ToPropertyEx(this, vm => vm.IsValidRiskReward)
+                .DisposeWith(disposables);
+        }
     }
 }

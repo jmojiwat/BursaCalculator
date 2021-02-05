@@ -3,7 +3,7 @@ using BursaCalculator.Core.Infrastructure;
 
 namespace BursaCalculator.Core
 {
-    public class BrokeragePercentageRate
+    public record BrokeragePercentageRate
     {
         public BrokeragePercentageRate(decimal amountFrom, Percent rate)
         {
@@ -14,5 +14,11 @@ namespace BursaCalculator.Core
 
         public decimal AmountFrom { get; }
         public Percent Rate { get; }
+    }
+
+    public static class BrokeragePercentageRateExtensions
+    {
+        public static BrokeragePercentageRate BrokeragePercentageRate(decimal amountFrom, Percent rate) =>
+            new BrokeragePercentageRate(amountFrom, rate);
     }
 }
